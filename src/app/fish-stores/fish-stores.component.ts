@@ -23,16 +23,16 @@ export interface nodeElement {
   styleUrls: ['./fish-stores.component.scss']
 })
 export class FishStoresComponent {
-  private excerciceData: any;
-  private nodeData: nodeElement;
-  private fishtypes: string;
-  private nFishTypes: number;
-  private fishtypesCount: string;
-  private origin: string;
-  private target: string;
-  private weight: string;
-  private viewAll: boolean;
-  private edit: boolean;
+  excerciceData: any;
+  nodeData: nodeElement;
+  fishtypes: string;
+  nFishTypes: number;
+  fishtypesCount: string;
+  origin: string;
+  target: string;
+  weight: string;
+  viewAll: boolean;
+  edit: boolean;
 
   //implements OnInit
   constructor(private fishStoresApiService: FishStoresApiServiceService) {}
