@@ -1,0 +1,170 @@
+<div class="container">
+  <mat-card *ngIf="viewAll">
+    <mat-card-content>
+      <mat-card-title translate>Stored Excercises</mat-card-title>
+
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+            >
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(row) : null"
+              [checked]="selection.isSelected(row)"
+            >
+            </mat-checkbox>
+          </td>
+        </ng-container>
+        <!-- Position Column -->
+        <ng-container matColumnDef="id">
+          <th *matHeaderCellDef>No.</th>
+          <td *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="n_shops">
+          <th *matHeaderCellDef># Shops</th>
+          <td *matCellDef="let element">{{ element.n_shops }}</td>
+        </ng-container>
+
+        <!-- Weight Column -->
+        <ng-container matColumnDef="n_paths">
+          <th *matHeaderCellDef># Paths</th>
+          <td *matCellDef="let element">{{ element.n_paths }}</td>
+        </ng-container>
+
+        <!-- Symbol Column -->
+        <ng-container matColumnDef="n_fishtypes">
+          <th *matHeaderCellDef># Fish Types</th>
+          <td *matCellDef="let element">{{ element.n_fishtypes }}</td>
+        </ng-container>
+        <!-- view column -->
+        <ng-container matColumnDef="view">
+          <th *matHeaderCellDef>Options</th>
+          <td *matCellDef="let element">
+            <button mat-icon-button (click)="viewExcercise(element)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </mat-card-content>
+    <button mat-icon-button (click)="viewAll = false; edit = true; nodeData = {}">
+      <mat-icon>add_circle_outline</mat-icon>
+    </button>
+  </mat-card>
+  <div class="show-container" *ngIf="!viewAll">
+    <mat-card>
+      <mat-card-content class="mat-elevation-z8">
+        <form *ngIf="!edit">
+          <mat-form-field>
+            <input matInput [(ngModel)]="nodeData.excercice.id" placeholder="N." name="id" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [(ngModel)]="nodeData.excercice.n_paths" placeholder="# Paths" name="n_npaths" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [(ngModel)]="nodeData.excercice.n_shops" placeholder="# Shops" name="n_shops" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <input
+              matInput
+              [(ngModel)]="nodeData.excercice.n_fishtypes"
+              placeholder="# Fish Types"
+              name="n_fishtypes"
+            />
+          </mat-form-field>
+        </form>
+        <form *ngIf="edit">
+          <mat-form-field>
+            <input matInput [(ngModel)]="nFishTypes" placeholder="fishTypes in the excercice" name="nfishtypes" />
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput [(ngModel)]="fishtypes" placeholder="Add fishtypes sold in shop" name="fish" />
+          </mat-form-field>
+
+          <button (click)="addShop()" mat-icon-button>
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+          <br />
+          <mat-form-field>
+            <input matInput [(ngModel)]="origin" placeholder="Add origin shop for relation" name="origin" />
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput [(ngModel)]="target" placeholder="Add target shop for relation" name="target" />
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput [(ngModel)]="weight" placeholder="Add Weight for relation" name="weight" />
+          </mat-form-field>
+
+          <button (click)="addRelation()" mat-icon-button>
+            <mat-icon>add_circle_outline</mat-icon>
+          </button>
+        </form>
+        <br />
+        <mat-accordion>
+          <table>
+            <tr>
+              <td></td>
+              <td>
+                <h1>Shops Info:</h1>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Shop#</th>
+              <th>FishTypes#</th>
+              <th>FishTypes</th>
+            </tr>
+            <tr *ngFor="let item of nodeData.shopsFishTypesInfo; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ item[0] }}</td>
+              <td>{{ item[1] }}</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>
+                <h1>Connections Info:</h1>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <th>Source Shop#</th>
+              <th>Target Shop#</th>
+              <th>Weight</th>
+            </tr>
+            <tr *ngFor="let item of nodeData.shopsConnInfo; let i = index">
+              <td>{{ item[0] }}</td>
+              <td>{{ item[1] }}</td>
+              <td>{{ item[2] }}</td>
+            </tr>
+          </table>
+        </mat-accordion>
+        <br />
+        <button mat-icon-button (click)="viewAll = true; edit = false; clean()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <button mat-icon-button (click)="calculateExcercice()">
+          <mat-icon>cloud_upload</mat-icon>
+        </button>
+        <button *ngIf="edit" mat-icon-button (click)="saveExcercice()">
+          <mat-icon>save</mat-icon>
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
