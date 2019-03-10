@@ -17,8 +17,13 @@
     "prettier": "prettier --write \"./{src,e2e}/**/*.{ts,js,scss}\"",
     "prettier:check": "prettier --list-different \"./{src,e2e}/**/*.{ts,js,scss}\"",
     "postinstall": "ng build --aot --prod",
+    "heroku-postbuild": "ng build --prod",
     "precommit": "pretty-quick --staged",
     "generate": "ng generate"
+  },
+  "engines": {
+    "node": "6.7.0",
+    "npm": "11.11.0"
   },
   "dependencies": {
     "@angular/animations": "^7.0.0",
